@@ -35,6 +35,10 @@ func onMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 		question := strings.Join(split[1:], " ")
 		go s.ChannelMessageSendEmbed(m.ChannelID, _8ball(question))
 	}
+	if cmd == prefix+"reverse" {
+		sentence := strings.Join(split[1:], " ")
+		go s.ChannelMessageSend(m.ChannelID, reverse(sentence))
+	}
 }
 
 func onReady(s *discordgo.Session, r *discordgo.Ready) {
