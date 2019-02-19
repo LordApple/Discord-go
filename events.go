@@ -15,7 +15,7 @@ import (
 )
 
 func onMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
-	split := strings.Split(m.Content, " ")
+	split := strings.Split(strings.ToLower(m.Content), " ")
 	cmd := split[0]
 
 	//Bot won't respond to itself
@@ -28,7 +28,12 @@ func onMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if cmd == prefix+"about" {
-		s.ChannelMessageSendEmbed(m.ChannelID, aboutBot(s))
+		go s.ChannelMessageSendEmbed(m.ChannelID, aboutBot(s))
+	}
+
+	if cmd == prefix+"8ball" || cmd == prefix+"8" {
+		question := strings.Join(split[1:], " ")
+		go s.ChannelMessageSendEmbed(m.ChannelID, _8ball(question))
 	}
 }
 
@@ -44,6 +49,7 @@ func onReady(s *discordgo.Session, r *discordgo.Ready) {
 	fmt.Println("Created by Apple#1337")
 
 }
+
 func changeStatus(s *discordgo.Session) {
 	var cfg config
 	bytes, err := ioutil.ReadFile("config.json")
