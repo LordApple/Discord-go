@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
+	"os/signal"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -36,6 +38,9 @@ func main() {
 		fmt.Println("Failed to create websocket", err)
 	}
 
-	ch := make(chan int)
+	ch := make(chan os.Signal, 1)
+	signal.Notify(ch, os.Interrupt, os.Kill)
 	<-ch
+
+	dg.Close()
 }

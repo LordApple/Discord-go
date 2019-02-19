@@ -1,9 +1,15 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"math/rand"
+	"os"
+	"os/signal"
 	"runtime"
 	"strings"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -27,7 +33,7 @@ func onMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 func onReady(s *discordgo.Session, r *discordgo.Ready) {
-	s.UpdateStreamingStatus(0, "nhentai.net", "https://www.twitch.tv/twitchbot_discord")
+	go changeStatus(s)
 	fmt.Println("Logged in as " + r.User.Username + "#" + r.User.Discriminator + "  ID: " + r.User.ID)
 	fmt.Println("--------")
 	fmt.Printf("Current DiscordGO Version: %v | Current Golang Version: %v\n", discordgo.VERSION, runtime.Version())
@@ -37,4 +43,29 @@ func onReady(s *discordgo.Session, r *discordgo.Ready) {
 	fmt.Println("--------")
 	fmt.Println("Created by Apple#1337")
 
+}
+func changeStatus(s *discordgo.Session) {
+	var cfg config
+	bytes, err := ioutil.ReadFile("config.json")
+	if err != nil {
+		fmt.Println("Failed to find config.json file")
+		return
+	}
+	json.Unmarshal(bytes, &cfg)
+
+	for {
+		rand.Seed(time.Now().UnixNano())
+		if cfg.Activity.Type == 3 {
+			s.UpdateStreamingStatus(0, cfg.Activity.Gamelist[rand.Intn(len(cfg.Activity.Gamelist))], "https://www.twitch.tv/twitchbot_discord")
+		}
+		if cfg.Activity.Type == 2 {
+			s.UpdateListeningStatus(cfg.Activity.Gamelist[rand.Intn(len(cfg.Activity.Gamelist))])
+		}
+		if cfg.Activity.Type == 1 {
+			s.UpdateStatus(0, cfg.Activity.Gamelist[rand.Intn(len(cfg.Activity.Gamelist))])
+		}
+		ch := make(chan os.Signal, 1)
+		signal.Notify(ch, os.Interrupt, os.Kill)
+		time.Sleep(60 * time.Second)
+	}
 }
