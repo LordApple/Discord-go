@@ -16,6 +16,7 @@ import (
 
 func onMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	split := strings.Split(strings.ToLower(m.Content), " ")
+	splitNormal := strings.Split(m.Content, " ")
 	cmd := split[0]
 
 	//Bot won't respond to itself
@@ -35,6 +36,7 @@ func onMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 		question := strings.Join(split[1:], " ")
 		go s.ChannelMessageSendEmbed(m.ChannelID, _8ball(question))
 	}
+
 	if cmd == prefix+"reverse" {
 		sentence := strings.Join(split[1:], " ")
 		go s.ChannelMessageSend(m.ChannelID, reverse(sentence))
@@ -42,6 +44,12 @@ func onMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	if cmd == prefix+"greentext" {
 		go s.ChannelMessageSendEmbed(m.ChannelID, greentext())
+	}
+
+	if cmd == prefix+"play" {
+		url := strings.Join(splitNormal[2:], " ")
+		channel := strings.Join(split[1:2], " ")
+		go s.ChannelMessageSend(m.ChannelID, play(s, m, m.GuildID, channel, url))
 	}
 }
 
