@@ -47,9 +47,28 @@ func onMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if cmd == prefix+"play" {
-		url := strings.Join(splitNormal[2:], " ")
-		channel := strings.Join(split[1:2], " ")
-		go s.ChannelMessageSend(m.ChannelID, play(s, m, m.GuildID, channel, url))
+		url := strings.Join(splitNormal[1:], " ")
+		isVoice := false
+		guild, _ := s.State.Guild(m.GuildID)
+
+		if len(url) == 0 {
+			go s.ChannelMessageSend(m.ChannelID, "No URL found.")
+			return
+		}
+
+		for _, user := range guild.VoiceStates {
+			if user.UserID == m.Author.ID {
+				isVoice = true
+				go s.ChannelMessageSend(m.ChannelID, play(s, m, m.GuildID, user.ChannelID, url))
+				break
+			} else {
+				isVoice = false
+			}
+		}
+
+		if !isVoice {
+			go s.ChannelMessageSend(m.ChannelID, "You must be in a voice channel.")
+		}
 	}
 }
 
