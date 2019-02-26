@@ -39,6 +39,10 @@ func onMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 		sentence := strings.Join(split[1:], " ")
 		go s.ChannelMessageSend(m.ChannelID, reverse(sentence))
 	}
+
+	if cmd == prefix+"greentext" {
+		go s.ChannelMessageSendEmbed(m.ChannelID, greentext())
+	}
 }
 
 func onReady(s *discordgo.Session, r *discordgo.Ready) {
