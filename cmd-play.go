@@ -13,6 +13,7 @@ func play(session *discordgo.Session, mCreate *discordgo.MessageCreate, guildID,
 	}
 
 	voice, _ := session.ChannelVoiceJoin(guildID, channelID, false, true)
+	defer voice.Disconnect()
 
 	options := dca.StdEncodeOptions
 	options.RawOutput = true
@@ -42,7 +43,6 @@ func play(session *discordgo.Session, mCreate *discordgo.MessageCreate, guildID,
 	dca.NewStream(encoded, voice, done)
 	<-done
 
-	voice.Disconnect()
 	return "Done playing " + audio.Title
 
 }
