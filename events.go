@@ -19,10 +19,6 @@ func onMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	splitNormal := strings.Split(m.Content, " ")
 	cmd := split[0]
 
-	//Bot won't respond to itself
-	if m.Author.ID == s.State.User.ID {
-		return
-	}
 	//if message author is a bot, return
 	if m.Author.Bot {
 		return
@@ -32,13 +28,26 @@ func onMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 		go s.ChannelMessageSendEmbed(m.ChannelID, aboutBot(s))
 	}
 
+	if cmd == prefix+"pickle" {
+		users := m.Mentions
+		if len(users) < 1 {
+			users = append(users, m.Author)
+		}
+		go s.ChannelMessageSend(m.ChannelID, pickle(users))
+	}
+
 	if cmd == prefix+"8ball" || cmd == prefix+"8" {
 		question := strings.Join(split[1:], " ")
 		go s.ChannelMessageSendEmbed(m.ChannelID, _8ball(question))
 	}
 
+	if cmd == prefix+"echo" {
+		echo := strings.Join(splitNormal[1:], " ")
+		go s.ChannelMessageSend(m.ChannelID, echo)
+	}
+
 	if cmd == prefix+"reverse" {
-		sentence := strings.Join(split[1:], " ")
+		sentence := strings.Join(splitNormal[1:], " ")
 		go s.ChannelMessageSend(m.ChannelID, reverse(sentence))
 	}
 
