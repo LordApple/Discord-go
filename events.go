@@ -46,7 +46,7 @@ func onMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 		go s.ChannelMessageSend(m.ChannelID, echo)
 	}
 
-	if cmd == prefix+"reverse" {
+	if cmd == prefix+"reverse" || cmd == prefix+"rev" {
 		sentence := strings.Join(splitNormal[1:], " ")
 		go s.ChannelMessageSend(m.ChannelID, reverse(sentence))
 	}

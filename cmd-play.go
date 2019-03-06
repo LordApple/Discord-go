@@ -37,7 +37,14 @@ func play(session *discordgo.Session, mCreate *discordgo.MessageCreate, guildID,
 	}
 	defer encoded.Cleanup()
 
-	session.ChannelMessageSend(mCreate.ChannelID, "Now playing "+audio.Title)
+	embed := NewEmbed().
+		SetTitle("Now playing "+audio.Title).
+		AddField("Uploaded By", audio.Author).
+		SetThumbnail(audio.GetThumbnailURL(ytdl.ThumbnailQualityHigh).String()).
+		SetColor(0xff0000).
+		MessageEmbed
+
+	session.ChannelMessageSendEmbed(mCreate.ChannelID, embed)
 
 	done := make(chan error)
 	dca.NewStream(encoded, voice, done)
