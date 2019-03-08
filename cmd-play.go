@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strconv"
 	"strings"
 	"time"
 
@@ -32,14 +33,16 @@ func play(session *discordgo.Session, mCreate *discordgo.MessageCreate, guildID,
 
 			songNames = append(songNames, audio.Title)
 		}
+		fields := []*discordgo.MessageEmbedField{}
+		for x := 1; x <= len(urls); x++ {
+			fields = append(fields, &discordgo.MessageEmbedField{Name: strconv.FormatInt(int64(x), 10), Value: songNames[x-1]})
+		}
 
 		embed := NewEmbed().
 			SetTitle("Select a song.").
-			AddField("1.", songNames[0]).
-			AddField("2.", songNames[1]).
-			AddField("3.", songNames[2]).
 			SetColor(0xff0000).
 			MessageEmbed
+		embed.Fields = fields
 
 		session.ChannelMessageSendEmbed(mCreate.ChannelID, embed)
 
