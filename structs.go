@@ -7,6 +7,9 @@ type config struct {
 		Gamelist []string `json:"GAMES"`
 		Type     int      `json:"TYPE"`
 	} `json:"ACTIVITY"`
+	Tokens struct {
+		YouTube string `json:"YOUTUBE"`
+	} `json:"TOKENS"`
 }
 
 type reddit struct {

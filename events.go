@@ -25,7 +25,7 @@ func onMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if cmd == prefix+"about" {
-		go s.ChannelMessageSendEmbed(m.ChannelID, aboutBot(s))
+		s.ChannelMessageSendEmbed(m.ChannelID, aboutBot(s))
 	}
 
 	if cmd == prefix+"pickle" {
@@ -33,26 +33,26 @@ func onMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if len(users) < 1 {
 			users = append(users, m.Author)
 		}
-		go s.ChannelMessageSend(m.ChannelID, pickle(users))
+		s.ChannelMessageSend(m.ChannelID, pickle(users))
 	}
 
 	if cmd == prefix+"8ball" || cmd == prefix+"8" {
 		question := strings.Join(split[1:], " ")
-		go s.ChannelMessageSendEmbed(m.ChannelID, _8ball(question))
+		s.ChannelMessageSendEmbed(m.ChannelID, _8ball(question))
 	}
 
 	if cmd == prefix+"echo" {
 		echo := strings.Join(splitNormal[1:], " ")
-		go s.ChannelMessageSend(m.ChannelID, echo)
+		s.ChannelMessageSend(m.ChannelID, echo)
 	}
 
 	if cmd == prefix+"reverse" || cmd == prefix+"rev" {
 		sentence := strings.Join(splitNormal[1:], " ")
-		go s.ChannelMessageSend(m.ChannelID, reverse(sentence))
+		s.ChannelMessageSend(m.ChannelID, reverse(sentence))
 	}
 
 	if cmd == prefix+"greentext" {
-		go s.ChannelMessageSendEmbed(m.ChannelID, greentext())
+		s.ChannelMessageSendEmbed(m.ChannelID, greentext())
 	}
 
 	if cmd == prefix+"play" {
@@ -61,14 +61,14 @@ func onMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 		guild, _ := s.State.Guild(m.GuildID)
 
 		if len(url) == 0 {
-			go s.ChannelMessageSend(m.ChannelID, "No URL found.")
+			s.ChannelMessageSend(m.ChannelID, "No URL found.")
 			return
 		}
 
 		for _, user := range guild.VoiceStates {
 			if user.UserID == m.Author.ID {
 				isVoice = true
-				go s.ChannelMessageSend(m.ChannelID, play(s, m, m.GuildID, user.ChannelID, url))
+				s.ChannelMessageSend(m.ChannelID, play(s, m, m.GuildID, user.ChannelID, url))
 				break
 			} else {
 				isVoice = false
@@ -76,7 +76,7 @@ func onMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 
 		if !isVoice {
-			go s.ChannelMessageSend(m.ChannelID, "You must be in a voice channel.")
+			s.ChannelMessageSend(m.ChannelID, "You must be in a voice channel.")
 		}
 	}
 }
