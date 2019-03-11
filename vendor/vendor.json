@@ -3,34 +3,19 @@
 	"ignore": "test",
 	"package": [
 		{
-			"checksumSHA1": "",
-			"comment": "",
-			"path": "google.golang.org/api/googleapi/transport",
-			"revision": ""
+			"path": "google.golang.org/api/googleapi/transport"
 		},
     {
-			"checksumSHA1": "",
-			"comment": "",
-			"path": "github.com/bwmarrin/discordgo",
-			"revision": ""
+			"path": "github.com/bwmarrin/discordgo"
 		},
     {
-			"checksumSHA1": "",
-			"comment": "",
-			"path": "github.com/jonas747/dca",
-			"revision": ""
+			"path": "github.com/jonas747/dca"
 		},
     {
-			"checksumSHA1": "",
-			"comment": "",
-			"path": "github.com/rylio/ytdl",
-			"revision": ""
+			"path": "github.com/rylio/ytdl"
 		},
     {
-			"checksumSHA1": "",
-			"comment": "",
-			"path": "google.golang.org/api/youtube/v3",
-			"revision": ""
+			"path": "google.golang.org/api/youtube/v3"
 		}
 	],
 	"rootPath": "github.com/LordApple/Yuriko-rewrite"
