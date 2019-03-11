@@ -1,1 +1,1 @@
-heroku deploy: Yuriko-rewrite
+deploy: ./bin/Yuriko-rewrite
