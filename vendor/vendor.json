@@ -5,16 +5,16 @@
 		{
 			"path": "google.golang.org/api/googleapi/transport"
 		},
-    		{
+    	{
 			"path": "github.com/bwmarrin/discordgo"
 		},
-    		{
+    	{
 			"path": "github.com/jonas747/dca"
 		},
-    		{
+    	{
 			"path": "github.com/rylio/ytdl"
 		},
-    		{
+    	{
 			"path": "google.golang.org/api/youtube/v3"
 		}
 	],
