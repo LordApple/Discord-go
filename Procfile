@@ -1,1 +1,1 @@
-bot: Yuriko-rewrite
+heroku deploy: Yuriko-rewrite
