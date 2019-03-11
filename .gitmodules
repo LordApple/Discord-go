@@ -1,0 +1,6 @@
+[submodule "vendor/discordgo"]
+	path = vendor/discordgo
+	url = https://github.com/bwmarrin/discordgo
+[submodule "vendor/github/discordgo"]
+	path = vendor/github/discordgo
+	url = https://github.com/bwmarrin/discordgo
