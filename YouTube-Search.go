@@ -1,22 +1,15 @@
 package main
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"net/http"
+	"os"
 
 	"google.golang.org/api/googleapi/transport"
 	"google.golang.org/api/youtube/v3"
 )
 
 func findVideo(name string) ([]string, error) {
-	var cfg config
-	bytes, err := ioutil.ReadFile("config.json")
-	if err != nil {
-		return nil, err
-	}
-	json.Unmarshal(bytes, &cfg)
-	developerKey := cfg.Tokens.YouTube
+	developerKey := os.Getenv("YouTubeKey")
 
 	client := &http.Client{
 		Transport: &transport.APIKey{Key: developerKey},

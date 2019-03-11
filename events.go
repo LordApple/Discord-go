@@ -1,15 +1,10 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"math/rand"
 	"os"
-	"os/signal"
 	"runtime"
 	"strings"
-	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -95,27 +90,13 @@ func onReady(s *discordgo.Session, r *discordgo.Ready) {
 }
 
 func changeStatus(s *discordgo.Session) {
-	var cfg config
-	bytes, err := ioutil.ReadFile("config.json")
-	if err != nil {
-		fmt.Println("Failed to find config.json file")
-		return
+	if os.Getenv("ActivityType") == "3" {
+		s.UpdateStreamingStatus(0, os.Getenv("ActivityGame"), "https://www.twitch.tv/twitchbot_discord")
 	}
-	json.Unmarshal(bytes, &cfg)
-
-	for {
-		rand.Seed(time.Now().UnixNano())
-		if cfg.Activity.Type == 3 {
-			s.UpdateStreamingStatus(0, cfg.Activity.Gamelist[rand.Intn(len(cfg.Activity.Gamelist))], "https://www.twitch.tv/twitchbot_discord")
-		}
-		if cfg.Activity.Type == 2 {
-			s.UpdateListeningStatus(cfg.Activity.Gamelist[rand.Intn(len(cfg.Activity.Gamelist))])
-		}
-		if cfg.Activity.Type == 1 {
-			s.UpdateStatus(0, cfg.Activity.Gamelist[rand.Intn(len(cfg.Activity.Gamelist))])
-		}
-		ch := make(chan os.Signal, 1)
-		signal.Notify(ch, os.Interrupt, os.Kill)
-		time.Sleep(60 * time.Second)
+	if os.Getenv("ActivityType") == "2" {
+		s.UpdateListeningStatus(os.Getenv("ActivityGame"))
+	}
+	if os.Getenv("ActivityType") == "1" {
+		s.UpdateStatus(0, os.Getenv("ActivityGame"))
 	}
 }

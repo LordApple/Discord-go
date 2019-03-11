@@ -1,9 +1,7 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/signal"
 
@@ -15,17 +13,8 @@ var (
 )
 
 func main() {
-	var cfg config
-	bytes, err := ioutil.ReadFile("config.json")
-	if err != nil {
-		fmt.Println("Failed to find config.json file")
-		return
-	}
-	json.Unmarshal(bytes, &cfg)
-
-	prefix = cfg.Prefix
-
-	dg, err := discordgo.New("Bot " + cfg.Token)
+	prefix = os.Getenv("PREFIX")
+	dg, err := discordgo.New("Bot " + os.Getenv("TOKEN"))
 	if err != nil {
 		fmt.Println("Failed to create session", err)
 	}
