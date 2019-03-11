@@ -3,7 +3,6 @@ package main
 import (
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/jonas747/dca"
@@ -41,31 +40,40 @@ func play(session *discordgo.Session, mCreate *discordgo.MessageCreate, guildID,
 
 		embed := NewEmbed().
 			SetTitle("Select a song.").
-			SetColor(0xff0000).
+			SetColor(0xff0000).SetDescription(`Type "cancel" to quit`).
 			MessageEmbed
 		embed.Fields = fields
 
 		session.ChannelMessageSendEmbed(mCreate.ChannelID, embed)
-
+		c := make(chan int, 1)
 		waitFor := session.AddHandler(func(_ *discordgo.Session, msg *discordgo.MessageCreate) {
 			if msg.Author.ID == mCreate.Author.ID {
 				switch msg.Content {
 				case "1":
 					selected = true
 					url = urls[0]
+					c <- 1
 				case "2":
 					selected = true
 					url = urls[1]
+					c <- 1
 				case "3":
 					selected = true
 					url = urls[2]
+					c <- 1
+				case "cancel":
+					url = ""
+					c <- 1
 				}
 			}
 		})
-		time.Sleep(5 * time.Second)
+		<-c
 		waitFor()
+		if url == "" {
+			return "Selection cancelled."
+		}
 		if !selected {
-			return "No song selected"
+			return "No song selected."
 		}
 		if streaming[mCreate.GuildID] != nil {
 			streaming, _ := streaming[mCreate.GuildID].Finished()
