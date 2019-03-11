@@ -1,1 +1,1 @@
-release: Yuriko-rewrite
+deploy: Yuriko-rewrite
