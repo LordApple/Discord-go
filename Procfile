@@ -1,1 +1,1 @@
-deploy: ./bin/Yuriko-rewrite
+release: Yuriko-rewrite
