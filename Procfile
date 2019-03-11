@@ -1,1 +1,1 @@
-web: ./Yuriko-rewrite
+web: Yuriko-rewrite
