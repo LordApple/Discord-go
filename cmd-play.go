@@ -10,11 +10,12 @@ import (
 	"github.com/rylio/ytdl"
 )
 
+var (
+	queue     = make(map[string][]string)
+	streaming = make(map[string]*dca.StreamingSession)
+)
+
 func play(session *discordgo.Session, mCreate *discordgo.MessageCreate, guildID, channelID, url string) string {
-	_, isPlaying := session.VoiceConnections[mCreate.GuildID]
-	if isPlaying {
-		return "Already playing."
-	}
 	if !strings.HasPrefix(url, "https://www.youtube.com") {
 		results, err := findVideo(url)
 		if err != nil {
@@ -66,6 +67,20 @@ func play(session *discordgo.Session, mCreate *discordgo.MessageCreate, guildID,
 		if !selected {
 			return "No song selected"
 		}
+		if streaming[mCreate.GuildID] != nil {
+			streaming, _ := streaming[mCreate.GuildID].Finished()
+			if !streaming {
+				queue[mCreate.GuildID] = append(queue[mCreate.GuildID], url)
+				return "Added song to queue."
+			}
+		}
+	}
+	if streaming[mCreate.GuildID] != nil {
+		streaming, _ := streaming[mCreate.GuildID].Finished()
+		if !streaming {
+			queue[mCreate.GuildID] = append(queue[mCreate.GuildID], url)
+			return "Added song to queue."
+		}
 	}
 
 	voice, _ := session.ChannelVoiceJoin(guildID, channelID, false, true)
@@ -86,11 +101,11 @@ func play(session *discordgo.Session, mCreate *discordgo.MessageCreate, guildID,
 		return "Failed to get download url."
 	}
 
-	encoded, err := dca.EncodeFile(downloadURL.String(), options)
+	encoding, err := dca.EncodeFile(downloadURL.String(), options)
 	if err != nil {
 		return "Failed to encode audio."
 	}
-	defer encoded.Cleanup()
+	defer encoding.Cleanup()
 
 	embed := NewEmbed().
 		SetTitle("Now playing "+audio.Title).
@@ -102,9 +117,15 @@ func play(session *discordgo.Session, mCreate *discordgo.MessageCreate, guildID,
 	session.ChannelMessageSendEmbed(mCreate.ChannelID, embed)
 
 	done := make(chan error)
-	dca.NewStream(encoded, voice, done)
+	streaming[mCreate.GuildID] = dca.NewStream(encoding, voice, done)
 	<-done
 
-	return "Done playing " + audio.Title
+	for len(queue[mCreate.GuildID]) > 0 {
+		songURL := queue[mCreate.GuildID][0]
+		queue[mCreate.GuildID] = queue[mCreate.GuildID][1:]
+		play(session, mCreate, mCreate.GuildID, mCreate.ChannelID, songURL)
+	}
+
+	return "Done playing"
 
 }
