@@ -1,1 +1,1 @@
-release: Yuriko-rewrite
+bot: Yuriko-rewrite
