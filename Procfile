@@ -1,1 +1,1 @@
-web: Yuriko-rewrite
+worker: Yuriko-rewrite
