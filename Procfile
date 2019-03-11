@@ -1,1 +1,1 @@
-deploy: Yuriko-rewrite
+deploy: heroku ps:scale deploy=1 -a yuriko-rewrite
