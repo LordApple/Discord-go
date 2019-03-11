@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"os/signal"
 
@@ -15,6 +14,7 @@ var (
 
 func main() {
 	prefix = os.Getenv("PREFIX")
+
 	dg, err := discordgo.New("Bot " + os.Getenv("TOKEN"))
 	if err != nil {
 		fmt.Println("Failed to create session", err)
@@ -29,7 +29,6 @@ func main() {
 	}
 
 	ch := make(chan os.Signal, 1)
-	http.ListenAndServe("8000", nil)
 	signal.Notify(ch, os.Interrupt, os.Kill)
 	<-ch
 
