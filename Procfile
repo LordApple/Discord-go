@@ -1,1 +1,1 @@
-release: Yuriko-rewrite
+web: ./bin/Yuriko-rewrite
